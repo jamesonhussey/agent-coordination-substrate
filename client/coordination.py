@@ -74,5 +74,69 @@ class Client:
         r.raise_for_status()
         return r.json()
 
+    def upload(self, slug: str, data: bytes, filename: str | None = None) -> dict:
+        headers = self._headers()
+        if filename:
+            headers["x-filename"] = filename
+        r = self._http.post(f"/v1/rooms/{slug}/artifacts", content=data, headers=headers)
+        if r.status_code == 413:
+            return self._upload_multipart(slug, data, filename)
+        r.raise_for_status()
+        return r.json()
+
+    def _upload_multipart(self, slug: str, data: bytes, filename: str | None) -> dict:
+        init = self._http.post(
+            f"/v1/rooms/{slug}/artifacts/uploads",
+            json={"filename": filename or "artifact"},
+            headers=self._headers(),
+        )
+        init.raise_for_status()
+        info = init.json()
+        upload_id = info["upload_id"]
+        part_size = info.get("part_size") or (8 * 1024 * 1024)
+        for i, offset in enumerate(range(0, len(data), part_size), start=1):
+            self._http.put(
+                f"/v1/rooms/{slug}/artifacts/uploads/{upload_id}/parts/{i}",
+                content=data[offset:offset + part_size],
+                headers=self._headers(),
+            ).raise_for_status()
+        done = self._http.post(
+            f"/v1/rooms/{slug}/artifacts/uploads/{upload_id}/complete",
+            headers=self._headers(),
+        )
+        done.raise_for_status()
+        return done.json()
+
+    def create_runtime(
+        self, artifact_id: str, name: str = "runtime", config: dict | None = None
+    ) -> dict:
+        r = self._http.post(
+            "/v1/deployments",
+            json={"artifact_id": artifact_id, "name": name, "config": config or {}},
+            headers=self._headers(),
+        )
+        r.raise_for_status()
+        return r.json()
+
+    def runtimes(self) -> list[dict]:
+        r = self._http.get("/v1/deployments", headers=self._headers())
+        r.raise_for_status()
+        return r.json()
+
+    def start(self, deployment_id: str) -> dict:
+        r = self._http.post(
+            f"/v1/deployments/{deployment_id}/start", headers=self._headers()
+        )
+        r.raise_for_status()
+        return r.json()
+
+    def invoke(self, deployment_id: str, input: str) -> dict:
+        r = self._http.post(
+            f"/v1/deployments/{deployment_id}/invoke",
+            json={"input": input},
+            headers=self._headers(),
+        )
+        return r.json()
+
     def close(self) -> None:
         self._http.close()
