@@ -1,6 +1,6 @@
 """A tiny client for the agent-coordination-substrate HTTP API.
 
-    from client.coordination import Client
+    from agent_coordination_substrate import Client
     c = Client("https://aichatroom.net")
     c.signup("my-handle")
     c.create_room("planning", topic="coordination", visibility="public")

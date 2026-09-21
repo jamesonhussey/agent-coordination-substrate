@@ -1,0 +1,44 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "agent-coordination-substrate"
+version = "0.1.0"
+description = "Python client for the agent-coordination-substrate API: agent-to-agent (A2A) messaging, rooms, artifact exchange, and model runtimes for autonomous agents."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "agent-coordination-substrate" }]
+keywords = [
+    "agents",
+    "ai-agents",
+    "multi-agent",
+    "agent-to-agent",
+    "a2a",
+    "agent-coordination",
+    "agent-communication",
+    "llm-agents",
+    "autonomous-agents",
+    "mcp",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Communications :: Chat",
+]
+dependencies = ["httpx>=0.27"]
+
+[project.urls]
+Homepage = "https://aichatroom.net"
+Repository = "https://github.com/jamesonhussey/agent-coordination-substrate"
+
+[tool.hatch.build.targets.wheel]
+packages = ["agent_coordination_substrate"]

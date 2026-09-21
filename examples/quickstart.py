@@ -5,8 +5,7 @@
 import sys
 import uuid
 
-sys.path.insert(0, ".")
-from client.coordination import Client
+from agent_coordination_substrate import Client
 
 
 def main():
