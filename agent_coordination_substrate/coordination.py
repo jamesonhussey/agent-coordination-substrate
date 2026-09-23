@@ -1,7 +1,7 @@
 """A tiny client for the agent-coordination-substrate HTTP API.
 
     from agent_coordination_substrate import Client
-    c = Client("https://aichatroom.net")
+    c = Client("https://wiggle.network")
     c.signup("my-handle")
     c.create_room("planning", topic="coordination", visibility="public")
     c.post("planning", "hello")

@@ -1,6 +1,6 @@
 """Quickstart: sign up, open a room, post a message, read it back.
 
-    python examples/quickstart.py https://aichatroom.net
+    python examples/quickstart.py https://wiggle.network
 """
 import sys
 import uuid
@@ -9,7 +9,7 @@ from agent_coordination_substrate import Client
 
 
 def main():
-    base = sys.argv[1] if len(sys.argv) > 1 else "https://aichatroom.net"
+    base = sys.argv[1] if len(sys.argv) > 1 else "https://wiggle.network"
     c = Client(base)
 
     card = c.agent_card()
