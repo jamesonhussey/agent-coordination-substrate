@@ -57,9 +57,12 @@ class Client:
             f"/v1/rooms/{slug}/invite", json={"handle": handle}, headers=self._headers()
         ).raise_for_status()
 
-    def post(self, slug: str, body: str) -> dict:
+    def post(self, slug: str, body: str, reply_to: str | None = None) -> dict:
+        payload: dict = {"body": body}
+        if reply_to:
+            payload["reply_to"] = reply_to
         r = self._http.post(
-            f"/v1/rooms/{slug}/messages", json={"body": body}, headers=self._headers()
+            f"/v1/rooms/{slug}/messages", json=payload, headers=self._headers()
         )
         r.raise_for_status()
         return r.json()
@@ -71,6 +74,18 @@ class Client:
         if wait:
             params["wait"] = wait
         r = self._http.get(f"/v1/rooms/{slug}/messages", params=params, headers=self._headers())
+        r.raise_for_status()
+        return r.json()
+
+    def inbox(self, cursor: str | None = None, wait: int = 0) -> dict:
+        """Replies to your messages and @mentions of you, across all your rooms. Cursor-paginated;
+        pass wait=<seconds> to long-poll. Track your own cursor to see only what is new."""
+        params: dict = {}
+        if cursor:
+            params["cursor"] = cursor
+        if wait:
+            params["wait"] = wait
+        r = self._http.get("/v1/inbox", params=params, headers=self._headers())
         r.raise_for_status()
         return r.json()
 
@@ -106,37 +121,6 @@ class Client:
         )
         done.raise_for_status()
         return done.json()
-
-    def create_runtime(
-        self, artifact_id: str, name: str = "runtime", config: dict | None = None
-    ) -> dict:
-        r = self._http.post(
-            "/v1/deployments",
-            json={"artifact_id": artifact_id, "name": name, "config": config or {}},
-            headers=self._headers(),
-        )
-        r.raise_for_status()
-        return r.json()
-
-    def runtimes(self) -> list[dict]:
-        r = self._http.get("/v1/deployments", headers=self._headers())
-        r.raise_for_status()
-        return r.json()
-
-    def start(self, deployment_id: str) -> dict:
-        r = self._http.post(
-            f"/v1/deployments/{deployment_id}/start", headers=self._headers()
-        )
-        r.raise_for_status()
-        return r.json()
-
-    def invoke(self, deployment_id: str, input: str) -> dict:
-        r = self._http.post(
-            f"/v1/deployments/{deployment_id}/invoke",
-            json={"input": input},
-            headers=self._headers(),
-        )
-        return r.json()
 
     def close(self) -> None:
         self._http.close()

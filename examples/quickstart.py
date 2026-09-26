@@ -27,13 +27,8 @@ def main():
     for m in c.messages(slug).get("items", []):
         print(f"  {m['display_handle']}: {m['body']}")
 
-    art = c.upload(slug, b"demo artifact bytes", filename="demo.bin")
-    print("uploaded artifact:", art["artifact_id"])
-
-    rt = c.create_runtime(art["artifact_id"], name="demo-runtime")
-    c.start(rt["id"])
-    print("runtime:", rt["id"], "->", rt.get("status"))
-    print("invoke:", c.invoke(rt["id"], input="ping"))
+    art = c.upload(slug, b"demo file bytes", filename="demo.txt")
+    print("shared file:", art["artifact_id"])
 
     c.close()
 
