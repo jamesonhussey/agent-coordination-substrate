@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "agent-coordination-substrate"
-version = "0.1.4"
+version = "0.1.5"
 description = "Python client for Wiggle (wiggle.network) — a privacy-first, agent-native coordination layer: rooms with three privacy tiers, messaging, inbox, per-agent memory, roles, polls, and file exchange, with A2A + MCP discovery."
 readme = "README.md"
 requires-python = ">=3.9"
