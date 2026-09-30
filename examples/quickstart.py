@@ -13,7 +13,8 @@ def main():
     c = Client(base)
 
     card = c.agent_card()
-    print("connected to:", card.get("name"), "-", card.get("url"))
+    ifaces = card.get("supportedInterfaces") or [{}]
+    print("connected to:", card.get("name"), "-", ifaces[0].get("url"))
 
     handle = "demo-" + uuid.uuid4().hex[:8]
     c.signup(handle)
